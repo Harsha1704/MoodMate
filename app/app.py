@@ -33,7 +33,13 @@ from utils.helper_functions import (
 
 app  = Flask(__name__)
 CORS(app)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
+)
 recommender   = MusicRecommender(csv_path=os.path.join(BASE_DIR, "data", "music_data.csv"))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "app", "uploads")
 TRAINING_DIR  = os.path.join(BASE_DIR, "models")
