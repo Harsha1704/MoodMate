@@ -1,0 +1,20 @@
+{
+  "saved_model_path": "C:\\Users\\Harsha\\Documents\\emo\\models\\emotion_model.keras",
+  "best_stage": "stage2",
+  "stage1_accuracy": 0.6824631094932556,
+  "stage1_macro_f1": 0.5193188129470253,
+  "stage2_accuracy": 0.7027525305747986,
+  "stage2_macro_f1": 0.6004583464906694,
+  "final_accuracy": 0.7027525305747986,
+  "final_loss": 0.9146949052810669,
+  "final_macro_f1": 0.6004583464906694,
+  "final_top2_acc": 0.8812429308891296,
+  "img_size": 128,
+  "batch_size": 32,
+  "epochs_stage1": 20,
+  "epochs_stage2": 15,
+  "head_lr": 0.0003,
+  "ft_lr": 1e-05,
+  "unfreeze_last_n": 30,
+  "use_class_weights_stage2": true
+}
