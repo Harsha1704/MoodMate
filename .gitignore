@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Virtual Environment
+venv/
+.env/
+.venv/
+
+# Models (DO NOT PUSH)
+models/
+*.h5
+*.keras
+
+# Dataset (DO NOT PUSH)
+data/
+dataset/
+fer2013/
+*.csv
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Temporary
+*.tmp
+*.bak
