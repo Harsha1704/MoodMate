@@ -207,6 +207,10 @@ def _print_result(label, conf, _, top_k_list, uncertain):
 
 
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FIX: Changed from stage2 → stage1 to match your actual trained model file
+# ─────────────────────────────────────────────────────────────────────────────
 _DEFAULT_MODEL_PATH = os.path.join(_BASE_DIR, "models", "emotion_model_stage1.keras")
 
 _predictor_instance = None
@@ -223,7 +227,7 @@ def _get_default_predictor() -> EmotionPredictor:
             if not os.path.exists(_DEFAULT_MODEL_PATH):
                 raise FileNotFoundError(
                     f"Model not found at {_DEFAULT_MODEL_PATH}\n"
-                    "Please train the model first."
+                    "Please check that 'emotion_model_stage1.keras' exists in the models/ folder."
                 )
             _predictor_instance = EmotionPredictor(
                 _DEFAULT_MODEL_PATH,
@@ -252,6 +256,7 @@ def predict_from_path(image_path: str) -> dict:
 def predict_from_array(face_array: np.ndarray) -> dict:
     predictor = _get_default_predictor()
 
+    # face_array coming from OpenCV is BGR — flip to RGB before predicting
     if face_array.ndim == 3 and face_array.shape[2] == 3:
         face_array = face_array[:, :, ::-1]
 
@@ -267,6 +272,41 @@ def predict_from_array(face_array: np.ndarray) -> dict:
         "top3": top3,
         "uncertain": uncertain,
     }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# New helper: predict directly from a raw webcam BGR frame with face detection
+# Call this from your Flask /predict route or webcam live endpoint
+# ─────────────────────────────────────────────────────────────────────────────
+def predict_from_frame(bgr_frame: np.ndarray) -> dict:
+    """
+    Accepts a raw BGR frame from OpenCV / Flask.
+    Runs Haar-cascade face detection internally, crops the largest face,
+    then predicts emotion.
+
+    Returns a dict with keys:
+        emotion, confidence, all_scores, top3, uncertain, face_bbox
+        face_bbox = (x, y, w, h) or None if no face found
+    """
+    import cv2
+
+    face_bbox = None
+    cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+    detector = cv2.CascadeClassifier(cascade_path)
+    gray = cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2GRAY)
+    faces = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
+
+    if len(faces) > 0:
+        x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
+        face_bbox = (int(x), int(y), int(w), int(h))
+        face_crop = bgr_frame[y:y + h, x:x + w]  # BGR crop
+    else:
+        # No face found — run on full frame (will be less accurate)
+        face_crop = bgr_frame
+
+    result = predict_from_array(face_crop)  # handles BGR→RGB internally
+    result["face_bbox"] = face_bbox
+    return result
 
 
 if __name__ == "__main__":

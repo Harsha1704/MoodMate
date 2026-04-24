@@ -43,7 +43,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data", "fer2013")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
-MODEL_PATH = os.path.join(MODELS_DIR, "emotion_model_stage2.keras")
+MODEL_PATH = os.path.join(MODELS_DIR, "emotion_model.keras")
 STAGE1_MODEL_PATH = os.path.join(MODELS_DIR, "emotion_model_stage1.keras")
 STAGE2_MODEL_PATH = os.path.join(MODELS_DIR, "emotion_model_stage2.keras")
 
